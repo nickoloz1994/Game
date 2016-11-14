@@ -54,6 +54,8 @@ public class MenuScreen implements Screen {
             }
         });
 
+        levelButton.addListener(new ClickListener(){});
+
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
