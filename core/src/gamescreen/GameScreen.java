@@ -29,6 +29,7 @@ public class GameScreen extends ScreenAdapter {
     private float snakeXBeforeUpdate = 0;
     private float snakeYBeforeUpdate = 0;
     private boolean directionSet = false;
+    private boolean hasHit = false;
     Apple appleObject;
     Snake snake;
 
@@ -123,7 +124,6 @@ public class GameScreen extends ScreenAdapter {
                 break;
             }
         }
-        directionSet = false;
     }
 
     private void updateSnakeBodyPosition(){
@@ -172,6 +172,13 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void checkBodyCollision(){
+        for (SnakeBody part : bodyParts){
+            if (part.x == snake.position.x && part.y == snake.position.y)
+                hasHit = true;
+        }
+    }
+
     private void clearScreen(){
         Gdx.gl.glClearColor(0, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -192,12 +199,16 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         queryInput();
-        timer -= delta;
-        if (timer <= 0){
-            timer = Constants.MOVE_TIME;
-            moveSnake();
-            checkForOutOfBounds();
-            updateSnakeBodyPosition();
+        if (!hasHit) {
+            timer -= delta;
+            if (timer <= 0) {
+                timer = Constants.MOVE_TIME;
+                moveSnake();
+                checkForOutOfBounds();
+                updateSnakeBodyPosition();
+                checkBodyCollision();
+                directionSet = false;
+            }
         }
         checkAppleCollision();
         checkAndPlaceApple();
