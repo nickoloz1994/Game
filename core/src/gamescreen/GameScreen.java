@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import objects.Apple;
+import objects.GoldCoin;
 import objects.Snake;
 import utils.Constants;
 
@@ -29,12 +30,14 @@ public class GameScreen extends ScreenAdapter {
     private Texture snakeHead;
     private Texture apple;
     private Texture snakeBody;
+    private Texture gold;
 
     private BitmapFont bitmapFont;
     private GlyphLayout over = new GlyphLayout();
     private GlyphLayout liveScore = new GlyphLayout();
 
     private int score = 0;
+    private int counter = -1;
 
     private Viewport viewport;
     private Camera camera;
@@ -46,6 +49,9 @@ public class GameScreen extends ScreenAdapter {
     private int snakeDirection = Constants.RIGHT;
 
     private boolean appleAvailable = false;
+    private boolean coinAvailable = false;
+    private boolean collidedWithApple = false;
+    private boolean collidedWithCoin = false;
 
     private float snakeXBeforeUpdate = 0;
     private float snakeYBeforeUpdate = 0;
@@ -54,6 +60,7 @@ public class GameScreen extends ScreenAdapter {
 
     Apple appleObject;
     Snake snake;
+    GoldCoin goldCoin;
 
     private enum STATE {
         PLAYING,
@@ -87,8 +94,10 @@ public class GameScreen extends ScreenAdapter {
         snakeHead = new Texture(Gdx.files.internal("images/snakehead.png"));
         apple = new Texture(Gdx.files.internal("images/apple.png"));
         snakeBody = new Texture(Gdx.files.internal("images/snakebody.png"));
+        gold = new Texture(Gdx.files.internal("images/gold.png"));
         snake = new Snake();
         appleObject = new Apple();
+        goldCoin = new GoldCoin();
         bitmapFont = new BitmapFont();
         viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -169,7 +178,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void updateSnake(float delta) {
-        timer -= 2 * delta;
+        timer -= 4 * delta;
         if (timer <= 0) {
             timer = Constants.MOVE_TIME;
             moveSnake();
@@ -203,6 +212,7 @@ public class GameScreen extends ScreenAdapter {
                 appleObject.position.y = MathUtils.random(Gdx.graphics.getHeight()
                         / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
                 appleAvailable = true;
+                counter++;
             } while (appleObject.position.x == snake.position.x
                     && appleObject.position.y == snake.position.y);
         }
@@ -214,13 +224,48 @@ public class GameScreen extends ScreenAdapter {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
+            collidedWithApple = true;
+            collidedWithCoin = false;
             addToScore();
             appleAvailable = false;
+
+        }
+    }
+
+    private void checkAndPlaceCoin(){
+        if (counter == 5){
+            counter = 0;
+            do {
+                goldCoin.position.x = MathUtils.random(Gdx.graphics.getWidth()
+                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+                goldCoin.position.y = MathUtils.random(Gdx.graphics.getHeight()
+                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+                coinAvailable = true;
+            } while (goldCoin.position.x == snake.position.x
+                    && goldCoin.position.y == snake.position.y);
+        }
+    }
+
+    private void checkCoinCollision(){
+        if (coinAvailable && goldCoin.position.x == snake.position.x
+                && goldCoin.position.y == snake.position.y){
+            SnakeBody part = new SnakeBody(snakeBody);
+            part.updateBodyPosition(snake.position.x, snake.position.y);
+            bodyParts.insert(0, part);
+            collidedWithCoin = true;
+            collidedWithApple = false;
+            addToScore();
+            coinAvailable = false;
         }
     }
 
     private void addToScore(){
-        score += Constants.POINTS_PER_APPLE;
+        if (collidedWithApple == true){
+            score += Constants.POINTS_PER_APPLE;
+        }
+        if (collidedWithCoin == true){
+            score += Constants.POINTS_PER_COIN;
+        }
     }
 
     private void drawScore(){
@@ -250,8 +295,11 @@ public class GameScreen extends ScreenAdapter {
         for (SnakeBody body : bodyParts) {
             body.draw(batch);
         }
-        if (appleAvailable) {
+        if (appleAvailable){
             batch.draw(apple, appleObject.position.x, appleObject.position.y);
+        }
+        if (coinAvailable){
+            batch.draw(gold, goldCoin.position.x, goldCoin.position.y);
         }
         if (state == STATE.GAME_OVER) {
             over.setText(bitmapFont, Constants.GAME_OVER_TEXT);
@@ -288,7 +336,10 @@ public class GameScreen extends ScreenAdapter {
                 queryInput();
                 updateSnake(delta);
                 checkAppleCollision();
+                checkCoinCollision();
+                checkAndPlaceCoin();
                 checkAndPlaceApple();
+
             }
             break;
             case GAME_OVER: {

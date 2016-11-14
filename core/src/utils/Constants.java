@@ -14,4 +14,5 @@ public class Constants {
     public static final float WORLD_WIDTH = 640;
     public static final float WORLD_HEIGHT = 480;
     public static final int POINTS_PER_APPLE = 20;
+    public static final int POINTS_PER_COIN = 50;
 }
