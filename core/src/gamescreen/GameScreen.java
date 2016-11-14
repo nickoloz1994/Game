@@ -27,10 +27,7 @@ public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
 
-    private Texture snakeHead;
-    private Texture apple;
     private Texture snakeBody;
-    private Texture gold;
 
     private BitmapFont bitmapFont;
     private GlyphLayout over = new GlyphLayout();
@@ -91,10 +88,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        snakeHead = new Texture(Gdx.files.internal("images/snakehead.png"));
-        apple = new Texture(Gdx.files.internal("images/apple.png"));
         snakeBody = new Texture(Gdx.files.internal("images/snakebody.png"));
-        gold = new Texture(Gdx.files.internal("images/gold.png"));
         snake = new Snake();
         appleObject = new Apple();
         goldCoin = new GoldCoin();
@@ -291,15 +285,15 @@ public class GameScreen extends ScreenAdapter {
 
     private void draw() {
         batch.begin();
-        batch.draw(snakeHead, snake.position.x, snake.position.y);
+        batch.draw(snake.getTexture(), snake.position.x, snake.position.y);
         for (SnakeBody body : bodyParts) {
             body.draw(batch);
         }
         if (appleAvailable){
-            batch.draw(apple, appleObject.position.x, appleObject.position.y);
+            batch.draw(appleObject.getTexture(), appleObject.position.x, appleObject.position.y);
         }
         if (coinAvailable){
-            batch.draw(gold, goldCoin.position.x, goldCoin.position.y);
+            batch.draw(goldCoin.getTexture(), goldCoin.position.x, goldCoin.position.y);
         }
         if (state == STATE.GAME_OVER) {
             over.setText(bitmapFont, Constants.GAME_OVER_TEXT);
