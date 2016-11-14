@@ -3,12 +3,18 @@ package gamescreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import objects.Apple;
 import objects.Snake;
 import utils.Constants;
@@ -19,17 +25,30 @@ import utils.Constants;
 public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
+
     private Texture snakeHead;
     private Texture apple;
     private Texture snakeBody;
+
+    private BitmapFont bitmapFont;
+    private GlyphLayout layout = new GlyphLayout();
+
+    private Viewport viewport;
+    private Camera camera;
+
     private Array<SnakeBody> bodyParts = new Array<SnakeBody>();
+
     private float timer = Constants.MOVE_TIME;
+
     private int snakeDirection = Constants.RIGHT;
+
     private boolean appleAvailable = false;
+
     private float snakeXBeforeUpdate = 0;
     private float snakeYBeforeUpdate = 0;
+
     private boolean directionSet = false;
-    private boolean hasHit = false;
+
     Apple appleObject;
     Snake snake;
 
@@ -67,6 +86,11 @@ public class GameScreen extends ScreenAdapter {
         snakeBody = new Texture(Gdx.files.internal("images/snakebody.png"));
         snake = new Snake();
         appleObject = new Apple();
+        bitmapFont = new BitmapFont();
+        viewport = new FitViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, camera);
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2, 0);
+        camera.update();
     }
 
     private void queryInput() {
@@ -134,12 +158,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void updateSnakeBodyPosition() {
-        if (!hasHit) {
-            if (bodyParts.size > 0) {
-                SnakeBody part = bodyParts.removeIndex(0);
-                part.updateBodyPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
-                bodyParts.add(part);
-            }
+        if (bodyParts.size > 0) {
+            SnakeBody part = bodyParts.removeIndex(0);
+            part.updateBodyPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
+            bodyParts.add(part);
         }
     }
 
@@ -213,6 +235,11 @@ public class GameScreen extends ScreenAdapter {
         }
         if (appleAvailable) {
             batch.draw(apple, appleObject.position.x, appleObject.position.y);
+        }
+        if (state == STATE.GAME_OVER) {
+            layout.setText(bitmapFont, Constants.GAME_OVER_TEXT);
+            bitmapFont.draw(batch, Constants.GAME_OVER_TEXT, (viewport.getWorldWidth() - layout.width)/2,
+                    (viewport.getWorldHeight() - layout.height)/2);
         }
         batch.end();
     }
