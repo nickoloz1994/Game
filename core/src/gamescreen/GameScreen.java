@@ -95,6 +95,13 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void checkAppleCollision(){
+        if (appleAvailable && appleObject.position.x == snake.position.x
+                && appleObject.position.y == snake.position.y){
+            appleAvailable = false;
+        }
+    }
+
     private void clearScreen(){
         Gdx.gl.glClearColor(0, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -118,6 +125,7 @@ public class GameScreen extends ScreenAdapter {
             moveSnake();
             checkForOutOfBounds();
         }
+        checkAppleCollision();
         checkAndPlaceApple();
         clearScreen();
         draw();
