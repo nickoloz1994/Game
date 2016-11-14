@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
+import levelscreen.LevelScreen;
 
 /**
  * Created by nick on 11/14/2016.
@@ -21,24 +22,22 @@ import gamescreen.GameScreen;
 public class MenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
-    private SpriteBatch batch;
     private Game game;
     private Table table;
     private TextButton newGameButton;
     private TextButton levelButton;
     private TextButton exitButton;
 
-    public MenuScreen(Game game){
+    /*public MenuScreen(Game game){
         show();
         this.game = game;
-    }
+    }*/
 
     public MenuScreen(){
         create();
     }
 
     public void create(){
-        batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table();
@@ -54,7 +53,12 @@ public class MenuScreen implements Screen {
             }
         });
 
-        levelButton.addListener(new ClickListener(){});
+        levelButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
+            }
+        });
 
         exitButton.addListener(new ClickListener(){
             @Override
@@ -63,10 +67,11 @@ public class MenuScreen implements Screen {
             }
         });
 
+        //table.setFillParent(true);
         table.setWidth(stage.getWidth());
         table.align(Align.center|Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
-        table.padTop(50);
+        table.padTop(Gdx.graphics.getHeight() * 0.33f);
         table.add(newGameButton).padBottom(30);
         table.row();
         table.add(levelButton).padBottom(30);

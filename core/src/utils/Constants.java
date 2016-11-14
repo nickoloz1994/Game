@@ -10,7 +10,7 @@ public class Constants {
     public static final int LEFT = 1;
     public static final int UP = 2;
     public static final int DOWN = 3;
-    public static final String GAME_OVER_TEXT = "GAME OVER!!! PRESS SPACE TO RESTART!!!";
+    public static final String GAME_OVER_TEXT = "GAME OVER!!! PRESS SPACE FOR MAIN MENU!!!";
     public static final float WORLD_WIDTH = 640;
     public static final float WORLD_HEIGHT = 480;
     public static final int POINTS_PER_APPLE = 20;

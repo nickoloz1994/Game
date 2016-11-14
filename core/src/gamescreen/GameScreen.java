@@ -1,5 +1,6 @@
 package gamescreen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import levelscreen.LevelScreen;
+import menuscreen.MenuScreen;
 import objects.Apple;
 import objects.GoldCoin;
 import objects.Snake;
@@ -42,6 +45,7 @@ public class GameScreen extends ScreenAdapter {
     private Array<SnakeBody> bodyParts = new Array<SnakeBody>();
 
     private float timer = Constants.MOVE_TIME;
+    private float temp = Constants.MOVE_TIME;
 
     private int snakeDirection = Constants.RIGHT;
 
@@ -171,10 +175,18 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    public void setTimer(float x){
+        timer = x;
+    }
+
+    public void setTemp(float x){
+        temp = x;
+    }
+
     private void updateSnake(float delta) {
-        timer -= 4 * delta;
+        timer -= delta;
         if (timer <= 0) {
-            timer = Constants.MOVE_TIME;
+            timer = temp;
             moveSnake();
             checkForOutOfBounds();
             updateSnakeBodyPosition();
@@ -321,6 +333,7 @@ public class GameScreen extends ScreenAdapter {
         snakeYBeforeUpdate = 0;
         score = 0;
         appleAvailable = false;
+        ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
     }
 
     @Override
