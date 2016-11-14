@@ -33,27 +33,34 @@ public class GameScreen extends ScreenAdapter {
     Apple appleObject;
     Snake snake;
 
-    private class SnakeBody{
+    private enum STATE {
+        PLAYING,
+        GAME_OVER;
+    }
+
+    private STATE state = STATE.PLAYING;
+
+    private class SnakeBody {
         private float x, y;
         private Texture texture;
 
-        public SnakeBody(Texture texture){
+        public SnakeBody(Texture texture) {
             this.texture = texture;
         }
 
-        public void  updateBodyPosition(float x, float y){
+        public void updateBodyPosition(float x, float y) {
             this.x = x;
             this.y = y;
         }
 
-        public void draw(Batch batch){
+        public void draw(Batch batch) {
             if (!(x == snake.position.x && y == snake.position.y))
                 batch.draw(texture, x, y);
         }
     }
 
     @Override
-    public void show(){
+    public void show() {
         batch = new SpriteBatch();
         snakeHead = new Texture(Gdx.files.internal("images/snakehead.png"));
         apple = new Texture(Gdx.files.internal("images/apple.png"));
@@ -62,7 +69,7 @@ public class GameScreen extends ScreenAdapter {
         appleObject = new Apple();
     }
 
-    private void queryInput(){
+    private void queryInput() {
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
@@ -74,51 +81,51 @@ public class GameScreen extends ScreenAdapter {
         if (downPressed) updateDirection(Constants.DOWN);
     }
 
-    private void moveSnake(){
+    private void moveSnake() {
         snakeXBeforeUpdate = snake.position.x;
         snakeYBeforeUpdate = snake.position.y;
-        switch (snakeDirection){
-            case Constants.RIGHT:{
+        switch (snakeDirection) {
+            case Constants.RIGHT: {
                 snake.position.x += Constants.SNAKE_MOVEMENT;
                 return;
             }
-            case Constants.LEFT:{
+            case Constants.LEFT: {
                 snake.position.x -= Constants.SNAKE_MOVEMENT;
                 return;
             }
-            case Constants.UP:{
+            case Constants.UP: {
                 snake.position.y += Constants.SNAKE_MOVEMENT;
                 return;
             }
-            case Constants.DOWN:{
+            case Constants.DOWN: {
                 snake.position.y -= Constants.SNAKE_MOVEMENT;
                 return;
             }
         }
     }
 
-    private void updateIfNotOppositeDirection(int newDirection, int oppDirection){
+    private void updateIfNotOppositeDirection(int newDirection, int oppDirection) {
         if (snakeDirection != oppDirection || bodyParts.size == 0)
             snakeDirection = newDirection;
     }
 
-    private void updateDirection(int newDirection){
-        if (!directionSet && snakeDirection != newDirection){
+    private void updateDirection(int newDirection) {
+        if (!directionSet && snakeDirection != newDirection) {
             directionSet = true;
-            switch (newDirection){
-                case Constants.LEFT:{
+            switch (newDirection) {
+                case Constants.LEFT: {
                     updateIfNotOppositeDirection(newDirection, Constants.RIGHT);
                 }
                 break;
-                case Constants.RIGHT:{
+                case Constants.RIGHT: {
                     updateIfNotOppositeDirection(newDirection, Constants.LEFT);
                 }
                 break;
-                case Constants.UP:{
+                case Constants.UP: {
                     updateIfNotOppositeDirection(newDirection, Constants.DOWN);
                 }
                 break;
-                case Constants.DOWN:{
+                case Constants.DOWN: {
                     updateIfNotOppositeDirection(newDirection, Constants.UP);
                 }
                 break;
@@ -126,45 +133,59 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void updateSnakeBodyPosition(){
-        if (bodyParts.size > 0){
-            SnakeBody part = bodyParts.removeIndex(0);
-            part.updateBodyPosition(snakeXBeforeUpdate,snakeYBeforeUpdate);
-            bodyParts.add(part);
+    private void updateSnakeBodyPosition() {
+        if (!hasHit) {
+            if (bodyParts.size > 0) {
+                SnakeBody part = bodyParts.removeIndex(0);
+                part.updateBodyPosition(snakeXBeforeUpdate, snakeYBeforeUpdate);
+                bodyParts.add(part);
+            }
         }
     }
 
-    private void checkForOutOfBounds(){
-        if(snake.position.x >= Gdx.graphics.getWidth()){
+    private void updateSnake(float delta) {
+        timer -= delta;
+        if (timer <= 0) {
+            timer = Constants.MOVE_TIME;
+            moveSnake();
+            checkForOutOfBounds();
+            updateSnakeBodyPosition();
+            checkBodyCollision();
+            directionSet = false;
+        }
+    }
+
+    private void checkForOutOfBounds() {
+        if (snake.position.x >= Gdx.graphics.getWidth()) {
             snake.position.x = 0;
         }
-        if (snake.position.x < 0){
+        if (snake.position.x < 0) {
             snake.position.x = Gdx.graphics.getWidth() - Constants.SNAKE_MOVEMENT;
         }
-        if (snake.position.y >= Gdx.graphics.getHeight()){
+        if (snake.position.y >= Gdx.graphics.getHeight()) {
             snake.position.y = 0;
         }
-        if (snake.position.y < 0){
+        if (snake.position.y < 0) {
             snake.position.y = Gdx.graphics.getHeight() - Constants.SNAKE_MOVEMENT;
         }
     }
 
-    private void checkAndPlaceApple(){
-        if (!appleAvailable){
-            do{
+    private void checkAndPlaceApple() {
+        if (!appleAvailable) {
+            do {
                 appleObject.position.x = MathUtils.random(Gdx.graphics.getWidth()
-                        /Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
                 appleObject.position.y = MathUtils.random(Gdx.graphics.getHeight()
-                        /Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
                 appleAvailable = true;
-            }while (appleObject.position.x == snake.position.x
+            } while (appleObject.position.x == snake.position.x
                     && appleObject.position.y == snake.position.y);
         }
     }
 
-    private void checkAppleCollision(){
+    private void checkAppleCollision() {
         if (appleAvailable && appleObject.position.x == snake.position.x
-                && appleObject.position.y == snake.position.y){
+                && appleObject.position.y == snake.position.y) {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
@@ -172,25 +193,25 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void checkBodyCollision(){
-        for (SnakeBody part : bodyParts){
+    private void checkBodyCollision() {
+        for (SnakeBody part : bodyParts) {
             if (part.x == snake.position.x && part.y == snake.position.y)
-                hasHit = true;
+                state = STATE.GAME_OVER;
         }
     }
 
-    private void clearScreen(){
+    private void clearScreen() {
         Gdx.gl.glClearColor(0, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
-    private void draw(){
+    private void draw() {
         batch.begin();
         batch.draw(snakeHead, snake.position.x, snake.position.y);
-        for (SnakeBody body : bodyParts){
+        for (SnakeBody body : bodyParts) {
             body.draw(batch);
         }
-        if (appleAvailable){
+        if (appleAvailable) {
             batch.draw(apple, appleObject.position.x, appleObject.position.y);
         }
         batch.end();
@@ -198,20 +219,19 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        queryInput();
-        if (!hasHit) {
-            timer -= delta;
-            if (timer <= 0) {
-                timer = Constants.MOVE_TIME;
-                moveSnake();
-                checkForOutOfBounds();
-                updateSnakeBodyPosition();
-                checkBodyCollision();
-                directionSet = false;
+        switch (state) {
+            case PLAYING: {
+                queryInput();
+                updateSnake(delta);
+                checkAppleCollision();
+                checkAndPlaceApple();
             }
+            break;
+            case GAME_OVER: {
+
+            }
+            break;
         }
-        checkAppleCollision();
-        checkAndPlaceApple();
         clearScreen();
         draw();
     }
