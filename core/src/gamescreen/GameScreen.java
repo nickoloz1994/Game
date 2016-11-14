@@ -55,9 +55,9 @@ public class GameScreen extends ScreenAdapter {
 
     private boolean directionSet = false;
 
-    Apple appleObject;
-    Snake snake;
-    GoldCoin goldCoin;
+    private Apple appleObject;
+    private Snake snake;
+    private GoldCoin goldCoin;
 
     private enum STATE {
         PLAYING,
