@@ -28,6 +28,7 @@ public class GameScreen extends ScreenAdapter {
     private boolean appleAvailable = false;
     private float snakeXBeforeUpdate = 0;
     private float snakeYBeforeUpdate = 0;
+    private boolean directionSet = false;
     Apple appleObject;
     Snake snake;
 
@@ -66,10 +67,10 @@ public class GameScreen extends ScreenAdapter {
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
-        if (leftPressed) snakeDirection = Constants.LEFT;
-        if (rightPressed) snakeDirection = Constants.RIGHT;
-        if (upPressed) snakeDirection = Constants.UP;
-        if (downPressed) snakeDirection = Constants.DOWN;
+        if (leftPressed) updateDirection(Constants.LEFT);
+        if (rightPressed) updateDirection(Constants.RIGHT);
+        if (upPressed) updateDirection(Constants.UP);
+        if (downPressed) updateDirection(Constants.DOWN);
     }
 
     private void moveSnake(){
@@ -93,6 +94,36 @@ public class GameScreen extends ScreenAdapter {
                 return;
             }
         }
+    }
+
+    private void updateIfNotOppositeDirection(int newDirection, int oppDirection){
+        if (snakeDirection != oppDirection || bodyParts.size == 0)
+            snakeDirection = newDirection;
+    }
+
+    private void updateDirection(int newDirection){
+        if (!directionSet && snakeDirection != newDirection){
+            directionSet = true;
+            switch (newDirection){
+                case Constants.LEFT:{
+                    updateIfNotOppositeDirection(newDirection, Constants.RIGHT);
+                }
+                break;
+                case Constants.RIGHT:{
+                    updateIfNotOppositeDirection(newDirection, Constants.LEFT);
+                }
+                break;
+                case Constants.UP:{
+                    updateIfNotOppositeDirection(newDirection, Constants.DOWN);
+                }
+                break;
+                case Constants.DOWN:{
+                    updateIfNotOppositeDirection(newDirection, Constants.UP);
+                }
+                break;
+            }
+        }
+        directionSet = false;
     }
 
     private void updateSnakeBodyPosition(){
