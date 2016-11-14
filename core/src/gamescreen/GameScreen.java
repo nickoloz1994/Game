@@ -31,6 +31,7 @@ public class GameScreen extends ScreenAdapter {
         snakeHead = new Texture(Gdx.files.internal("images/snakehead.png"));
         apple = new Texture(Gdx.files.internal("images/apple.png"));
         snake = new Snake();
+        appleObject = new Apple();
     }
 
     private void queryInput(){
