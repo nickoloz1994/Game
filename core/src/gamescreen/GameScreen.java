@@ -31,7 +31,10 @@ public class GameScreen extends ScreenAdapter {
     private Texture snakeBody;
 
     private BitmapFont bitmapFont;
-    private GlyphLayout layout = new GlyphLayout();
+    private GlyphLayout over = new GlyphLayout();
+    private GlyphLayout liveScore = new GlyphLayout();
+
+    private int score = 0;
 
     private Viewport viewport;
     private Camera camera;
@@ -166,7 +169,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void updateSnake(float delta) {
-        timer -= delta;
+        timer -= 2 * delta;
         if (timer <= 0) {
             timer = Constants.MOVE_TIME;
             moveSnake();
@@ -211,7 +214,21 @@ public class GameScreen extends ScreenAdapter {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
+            addToScore();
             appleAvailable = false;
+        }
+    }
+
+    private void addToScore(){
+        score += Constants.POINTS_PER_APPLE;
+    }
+
+    private void drawScore(){
+        if (state == STATE.PLAYING){
+            String scoreToString = Integer.toString(score);
+            liveScore.setText(bitmapFont, scoreToString);
+            bitmapFont.draw(batch, scoreToString, Gdx.graphics.getWidth()-liveScore.width,
+                    Gdx.graphics.getHeight() - liveScore.height);
         }
     }
 
@@ -237,11 +254,31 @@ public class GameScreen extends ScreenAdapter {
             batch.draw(apple, appleObject.position.x, appleObject.position.y);
         }
         if (state == STATE.GAME_OVER) {
-            layout.setText(bitmapFont, Constants.GAME_OVER_TEXT);
-            bitmapFont.draw(batch, Constants.GAME_OVER_TEXT, (viewport.getWorldWidth() - layout.width)/2,
-                    (viewport.getWorldHeight() - layout.height)/2);
+            over.setText(bitmapFont, Constants.GAME_OVER_TEXT);
+            bitmapFont.draw(batch, Constants.GAME_OVER_TEXT, (viewport.getWorldWidth() - over.width)/2,
+                    (viewport.getWorldHeight() - over.height)/2);
         }
+        drawScore();
         batch.end();
+    }
+
+    private void checkForRestart(){
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            doRestart();
+    }
+
+    private void doRestart(){
+        state = STATE.PLAYING;
+        bodyParts.clear();
+        snakeDirection = Constants.RIGHT;
+        directionSet = false;
+        timer = Constants.MOVE_TIME;
+        snake.position.x = 0;
+        snake.position.y = 0;
+        snakeXBeforeUpdate = 0;
+        snakeYBeforeUpdate = 0;
+        score = 0;
+        appleAvailable = false;
     }
 
     @Override
@@ -255,7 +292,7 @@ public class GameScreen extends ScreenAdapter {
             }
             break;
             case GAME_OVER: {
-
+                checkForRestart();
             }
             break;
         }
