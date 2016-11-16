@@ -1,9 +1,6 @@
 package gamescreen;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,8 +14,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import menuscreen.MenuScreen;
+import menuscreen.SaveScreen;
 import objects.Apple;
 import objects.GoldCoin;
+import objects.Player;
 import objects.Snake;
 import utils.Constants;
 
@@ -62,8 +61,8 @@ public class GameScreen extends ScreenAdapter {
     private Apple appleObject;
     private Snake snake;
     private GoldCoin goldCoin;
-
-    //private ArrayList<Player> highScores = new ArrayList<Player>(3);
+    private SaveScreen saveScreen;
+    public Preferences highScore = Gdx.app.getPreferences("HighScore");
 
     private enum STATE {
         PLAYING,
@@ -103,6 +102,7 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2, 0);
         camera.update();
+        saveScreen = new SaveScreen();
     }
 
     private void queryInput() {
@@ -177,11 +177,11 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    public void setTimer(float x){
+    public void setTimer(float x) {
         timer = x;
     }
 
-    public void setTemp(float x){
+    public void setTemp(float x) {
         temp = x;
     }
 
@@ -240,8 +240,8 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void checkAndPlaceCoin(){
-        if (counter == 5){
+    private void checkAndPlaceCoin() {
+        if (counter == 5) {
             counter = 0;
             do {
                 goldCoin.position.x = MathUtils.random(Gdx.graphics.getWidth()
@@ -254,9 +254,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void checkCoinCollision(){
+    private void checkCoinCollision() {
         if (coinAvailable && goldCoin.position.x == snake.position.x
-                && goldCoin.position.y == snake.position.y){
+                && goldCoin.position.y == snake.position.y) {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
@@ -267,49 +267,38 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void addToScore(){
-        if (collidedWithApple){
+    private void addToScore() {
+        if (collidedWithApple) {
             score += Constants.POINTS_PER_APPLE;
         }
-        if (collidedWithCoin){
+        if (collidedWithCoin) {
             score += Constants.POINTS_PER_COIN;
         }
     }
 
-    private void drawScore(){
-        if (state == STATE.PLAYING){
+    private void drawScore() {
+        if (state == STATE.PLAYING) {
             String scoreToString = Integer.toString(score);
             liveScore.setText(bitmapFont, scoreToString);
-            bitmapFont.draw(batch, scoreToString, Gdx.graphics.getWidth()-liveScore.width,
+            bitmapFont.draw(batch, scoreToString, Gdx.graphics.getWidth() - liveScore.width,
                     Gdx.graphics.getHeight() - liveScore.height);
         }
     }
 
     private void checkBodyCollision() {
         for (SnakeBody part : bodyParts) {
-            if (part.x == snake.position.x && part.y == snake.position.y)
+            if (part.x == snake.position.x && part.y == snake.position.y) {
                 state = STATE.GAME_OVER;
-            //player.score = Integer.toString(score);
-            //checkScore(player, highScores);
+                Player player = new Player();
+                player.score = score;
+                if (player.score > highScore.getInteger("HighScore")) {
+                    highScore.putString("HighScore", Integer.toString(score));
+                    highScore.flush();
+                    ((Game)Gdx.app.getApplicationListener()).setScreen(new SaveScreen());
+                }
+            }
         }
     }
-
-    /*private void checkScore(Player player,ArrayList<Player> players){
-        for (int i = 0; i < 3; i++){
-            if (Integer.parseInt(players.get(0).score) < Integer.parseInt(player.score)){
-                players.remove(2);
-                players.add(0, player);
-            }
-            else if (Integer.parseInt(players.get(1).score) < Integer.parseInt(player.score)){
-                players.remove(2);
-                players.add(1, player);
-            }
-            else if (Integer.parseInt(players.get(2).score) < Integer.parseInt(player.score)){
-                players.remove(2);
-                players.add(2,player);
-            }
-        }
-    }*/
 
     private void clearScreen() {
         Gdx.gl.glClearColor(0, 0.5f, 0.5f, 1);
@@ -322,27 +311,27 @@ public class GameScreen extends ScreenAdapter {
         for (SnakeBody body : bodyParts) {
             body.draw(batch);
         }
-        if (appleAvailable){
+        if (appleAvailable) {
             batch.draw(appleObject.getTexture(), appleObject.position.x, appleObject.position.y);
         }
-        if (coinAvailable){
+        if (coinAvailable) {
             batch.draw(goldCoin.getTexture(), goldCoin.position.x, goldCoin.position.y);
         }
         if (state == STATE.GAME_OVER) {
             over.setText(bitmapFont, Constants.GAME_OVER_TEXT);
-            bitmapFont.draw(batch, Constants.GAME_OVER_TEXT, (viewport.getWorldWidth() - over.width)/2,
-                    (viewport.getWorldHeight() - over.height)/2);
+            bitmapFont.draw(batch, Constants.GAME_OVER_TEXT, (viewport.getWorldWidth() - over.width) / 2,
+                    (viewport.getWorldHeight() - over.height) / 2);
         }
         drawScore();
         batch.end();
     }
 
-    private void checkForRestart(){
+    private void checkForRestart() {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
             doRestart();
     }
 
-    private void doRestart(){
+    private void doRestart() {
         state = STATE.PLAYING;
         bodyParts.clear();
         snakeDirection = Constants.RIGHT;
@@ -354,7 +343,7 @@ public class GameScreen extends ScreenAdapter {
         snakeYBeforeUpdate = 0;
         score = 0;
         appleAvailable = false;
-        ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+        ((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
     }
 
     @Override

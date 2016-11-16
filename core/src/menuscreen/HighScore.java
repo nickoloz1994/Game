@@ -3,41 +3,42 @@ package menuscreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
-import levelscreen.LevelScreen;
 
 /**
  * Created by nick on 11/16/2016.
  */
-public class StartScreen implements Screen{
-    //private Game game;
-    private Stage stage;
+public class HighScore implements Screen {
     private Skin skin;
-    private TextButton startButton;
-    private TextField userName;
+    private Stage stage;
+    private TextField firstPlayer;
     private TextButton backButton;
+    private Table table;
+    private GameScreen gameScreen;
 
-    public StartScreen(){
-        //this.game = game;
+    public HighScore(){
         create();
     }
 
     private void create(){
-        stage = new Stage();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        startButton = new TextButton("START", skin);
-        userName = new TextField("",skin);
-
+        stage = new Stage(new ScreenViewport());
+        firstPlayer = new TextField("", skin);
         backButton = new TextButton("BACK", skin);
-        backButton.setSize(100,50);
-        backButton.setPosition(0, Gdx.graphics.getHeight() - backButton.getHeight());
+        table = new Table(skin);
+        gameScreen = new GameScreen();
+
         backButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -45,27 +46,19 @@ public class StartScreen implements Screen{
             }
         });
 
-        userName.setSize(250,100);
-        userName.setPosition(Gdx.graphics.getWidth()/2 - userName.getWidth()/2,
-                Gdx.graphics.getHeight()/2 + userName.getHeight()/4);
-
-        startButton.setSize(250,100);
-        startButton.setPosition(Gdx.graphics.getWidth()/2 - startButton.getWidth()/2,
-                Gdx.graphics.getHeight()/2 - startButton.getHeight());
-
-        startButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
-            }
-        });
-
-        stage.addActor(userName);
-        stage.addActor(startButton);
-        stage.addActor(backButton);
-
+        firstPlayer.setText(gameScreen.highScore.getString("UserName") + " " +
+                gameScreen.highScore.getString("HighScore"));
+        table.setWidth(stage.getWidth());
+        table.align(Align.center|Align.top);
+        table.setPosition(0, Gdx.graphics.getHeight());
+        table.padTop(Gdx.graphics.getHeight() * 0.33f);
+        table.add(firstPlayer).padBottom(30);
+        table.row();
+        table.add(backButton);
+        stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
     }
+
     @Override
     public void show() {
 

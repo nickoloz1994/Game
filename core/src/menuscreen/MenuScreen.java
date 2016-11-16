@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import gamescreen.GameScreen;
 import levelscreen.LevelScreen;
 
 /**
@@ -24,6 +25,7 @@ public class MenuScreen implements Screen {
     private TextButton newGameButton;
     private TextButton highScoresButton;
     private TextButton exitButton;
+    private GameScreen gameScreen;
 
     public MenuScreen(){
         create();
@@ -33,23 +35,23 @@ public class MenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table();
+        gameScreen = new GameScreen();
 
         newGameButton = new TextButton("NEW GAME",skin);
-        highScoresButton = new TextButton("HIGH SCORES", skin);
+        highScoresButton = new TextButton("HIGH SCORE", skin);
         exitButton = new TextButton("EXIT", skin);
 
         newGameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new StartScreen());
-                //((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
             }
         });
 
         highScoresButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new HighScore());
             }
         });
 
