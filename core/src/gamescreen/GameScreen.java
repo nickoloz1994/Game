@@ -16,12 +16,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import levelscreen.LevelScreen;
 import menuscreen.MenuScreen;
 import objects.Apple;
 import objects.GoldCoin;
 import objects.Snake;
 import utils.Constants;
+
 
 /**
  * Created by nick on 11/14/2016.
@@ -63,9 +63,11 @@ public class GameScreen extends ScreenAdapter {
     private Snake snake;
     private GoldCoin goldCoin;
 
+    //private ArrayList<Player> highScores = new ArrayList<Player>(3);
+
     private enum STATE {
         PLAYING,
-        GAME_OVER;
+        GAME_OVER
     }
 
     private STATE state = STATE.PLAYING;
@@ -266,10 +268,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void addToScore(){
-        if (collidedWithApple == true){
+        if (collidedWithApple){
             score += Constants.POINTS_PER_APPLE;
         }
-        if (collidedWithCoin == true){
+        if (collidedWithCoin){
             score += Constants.POINTS_PER_COIN;
         }
     }
@@ -287,8 +289,27 @@ public class GameScreen extends ScreenAdapter {
         for (SnakeBody part : bodyParts) {
             if (part.x == snake.position.x && part.y == snake.position.y)
                 state = STATE.GAME_OVER;
+            //player.score = Integer.toString(score);
+            //checkScore(player, highScores);
         }
     }
+
+    /*private void checkScore(Player player,ArrayList<Player> players){
+        for (int i = 0; i < 3; i++){
+            if (Integer.parseInt(players.get(0).score) < Integer.parseInt(player.score)){
+                players.remove(2);
+                players.add(0, player);
+            }
+            else if (Integer.parseInt(players.get(1).score) < Integer.parseInt(player.score)){
+                players.remove(2);
+                players.add(1, player);
+            }
+            else if (Integer.parseInt(players.get(2).score) < Integer.parseInt(player.score)){
+                players.remove(2);
+                players.add(2,player);
+            }
+        }
+    }*/
 
     private void clearScreen() {
         Gdx.gl.glClearColor(0, 0.5f, 0.5f, 1);

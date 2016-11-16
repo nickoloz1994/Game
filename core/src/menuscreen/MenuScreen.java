@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import gamescreen.GameScreen;
 import levelscreen.LevelScreen;
 
 /**
@@ -22,38 +20,33 @@ import levelscreen.LevelScreen;
 public class MenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
-    private Game game;
     private Table table;
     private TextButton newGameButton;
-    private TextButton levelButton;
+    private TextButton highScoresButton;
     private TextButton exitButton;
-
-    /*public MenuScreen(Game game){
-        show();
-        this.game = game;
-    }*/
 
     public MenuScreen(){
         create();
     }
 
-    public void create(){
+    private void create(){
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table();
 
         newGameButton = new TextButton("NEW GAME",skin);
-        levelButton = new TextButton("LEVEL", skin);
+        highScoresButton = new TextButton("HIGH SCORES", skin);
         exitButton = new TextButton("EXIT", skin);
 
         newGameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new StartScreen());
+                //((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen());
             }
         });
 
-        levelButton.addListener(new ClickListener(){
+        highScoresButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
@@ -67,14 +60,13 @@ public class MenuScreen implements Screen {
             }
         });
 
-        //table.setFillParent(true);
         table.setWidth(stage.getWidth());
         table.align(Align.center|Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
         table.padTop(Gdx.graphics.getHeight() * 0.33f);
         table.add(newGameButton).padBottom(30);
         table.row();
-        table.add(levelButton).padBottom(30);
+        table.add(highScoresButton).padBottom(30);
         table.row();
         table.add(exitButton);
         stage.addActor(table);

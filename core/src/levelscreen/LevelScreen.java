@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
+import menuscreen.StartScreen;
 import utils.Constants;
 
 /**
@@ -26,6 +27,7 @@ public class LevelScreen implements Screen {
     private TextButton levelThree;
     private TextButton levelFour;
     private TextButton levelFive;
+    private TextButton backButton;
     private Table table;
     private GameScreen screen = new GameScreen();
 
@@ -41,6 +43,7 @@ public class LevelScreen implements Screen {
         levelThree = new TextButton("LEVEL 3", skin);
         levelFour = new TextButton("LEVEL 4", skin);
         levelFive = new TextButton("LEVEL 5", skin);
+        backButton = new TextButton("BACK", skin);
         table = new Table();
 
         levelOne.addListener(new ClickListener(){
@@ -87,6 +90,13 @@ public class LevelScreen implements Screen {
             }
         });
 
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new StartScreen());
+            }
+        });
+
         table.setWidth(stage.getWidth());
         table.align(Align.center|Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
@@ -99,9 +109,15 @@ public class LevelScreen implements Screen {
         table.row();
         table.add(levelFour).padBottom(30);
         table.row();
-        table.add(levelFive);
+        table.add(levelFive).padBottom(30);
+        table.row();
+        table.add(backButton);
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public GameScreen getScreen(){
+        return screen;
     }
     @Override
     public void show() {
