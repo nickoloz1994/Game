@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Created by nick on 11/14/2016.
+ * Abstract class for game objects
  */
 public abstract class AbstractGameObject {
     public Vector2 position;

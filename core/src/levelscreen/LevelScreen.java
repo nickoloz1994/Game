@@ -17,7 +17,7 @@ import menuscreen.SaveScreen;
 import utils.Constants;
 
 /**
- * Created by nick on 11/14/2016.
+ * The class is used for creating menu screen for levels
  */
 public class LevelScreen implements Screen {
     private Stage stage;

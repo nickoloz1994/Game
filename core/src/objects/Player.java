@@ -1,7 +1,7 @@
 package objects;
 
 /**
- * Created by nick on 11/16/2016.
+ * This class is used to create player object
  */
 public class Player {
     public int score;

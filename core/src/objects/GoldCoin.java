@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * Created by nick on 11/14/2016.
+ * This class is used for creating gold coin objects
  */
 public class GoldCoin extends AbstractGameObject {
     private Texture texture;

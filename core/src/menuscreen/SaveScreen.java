@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import gamescreen.GameScreen;
 
 /**
- * Created by nick on 11/16/2016.
+ * This class creates a screen for saving high score
  */
 public class SaveScreen implements Screen{
     private Stage stage;
@@ -23,10 +23,16 @@ public class SaveScreen implements Screen{
     private TextButton backButton;
     private GameScreen gameScreen;
 
+    /**
+     * Constructor for creating save screen
+     * **/
     public SaveScreen(){
         create();
     }
 
+    /**
+     * Creates GUI for saving screen
+     * **/
     private void create(){
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("uiskin.json"));

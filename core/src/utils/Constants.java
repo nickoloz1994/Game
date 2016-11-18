@@ -1,7 +1,8 @@
 package utils;
 
 /**
- * Created by nick on 11/14/2016.
+ * This class contains multiple constants used
+ * in main game logic
  */
 public class Constants {
     public static final float MOVE_TIME = 1F;

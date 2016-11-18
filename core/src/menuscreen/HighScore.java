@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
 
 /**
- * Created by nick on 11/16/2016.
+ * This class creates menu screen for high score
  */
 public class HighScore implements Screen {
     private Skin skin;
@@ -26,10 +26,16 @@ public class HighScore implements Screen {
     private Table table;
     private GameScreen gameScreen;
 
+    /**
+     * Constructor for creating high score menu
+     * **/
     public HighScore(){
         create();
     }
 
+    /**
+     * Creates GUI of high score menu
+     * **/
     private void create(){
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());

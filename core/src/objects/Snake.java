@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * Created by nick on 11/14/2016.
+ * The class is used for creating snake object
  */
 public class Snake extends AbstractGameObject {
     private Texture texture;

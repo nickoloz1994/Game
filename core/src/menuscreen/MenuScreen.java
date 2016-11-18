@@ -16,7 +16,7 @@ import gamescreen.GameScreen;
 import levelscreen.LevelScreen;
 
 /**
- * Created by nick on 11/14/2016.
+ * This class creates GUI for main menu
  */
 public class MenuScreen implements Screen {
     private Stage stage;
@@ -25,17 +25,21 @@ public class MenuScreen implements Screen {
     private TextButton newGameButton;
     private TextButton highScoresButton;
     private TextButton exitButton;
-    private GameScreen gameScreen;
 
+    /**
+     * Constructor for creating main menu
+     */
     public MenuScreen(){
         create();
     }
 
+    /**
+     * Creates main menu GUI
+     * **/
     private void create(){
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         table = new Table();
-        gameScreen = new GameScreen();
 
         newGameButton = new TextButton("NEW GAME",skin);
         highScoresButton = new TextButton("HIGH SCORE", skin);
