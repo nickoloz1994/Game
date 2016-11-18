@@ -50,14 +50,14 @@ public class HighScore implements Screen {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
             }
         });
-
+        
         firstPlayer.setText(gameScreen.highScore.getString("UserName") + " " +
                 gameScreen.highScore.getString("HighScore"));
         table.setWidth(stage.getWidth());
         table.align(Align.center|Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
         table.padTop(Gdx.graphics.getHeight() * 0.33f);
-        table.add(firstPlayer).padBottom(30);
+        table.add(firstPlayer).width(300).height(60).padBottom(30);
         table.row();
         table.add(backButton);
         stage.addActor(table);

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
+import menuscreen.MenuScreen;
 import menuscreen.SaveScreen;
 import utils.Constants;
 
@@ -93,7 +94,7 @@ public class LevelScreen implements Screen {
         backButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new SaveScreen());
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
             }
         });
 
