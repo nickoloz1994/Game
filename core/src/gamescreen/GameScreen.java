@@ -23,24 +23,34 @@ import utils.Constants;
 
 
 /**
- * Created by nick on 11/14/2016.
+ * Snake Game
+ *
+ * @author Nika Ptskialadze
  */
 public class GameScreen extends ScreenAdapter {
 
+    //For drawing objects on the screen
     private SpriteBatch batch;
 
+    //For drawing snake's body parts
     private Texture snakeBody;
 
     private BitmapFont bitmapFont;
+
+    //For displaying live score and final score
     private GlyphLayout over = new GlyphLayout();
     private GlyphLayout liveScore = new GlyphLayout();
 
+    //Variable for storing the value of score
     private int score = 0;
+
+    //Variable for counting apples
     private int counter = -1;
 
     private Viewport viewport;
     private Camera camera;
 
+    //Array for storing snake's body parts
     private Array<SnakeBody> bodyParts = new Array<SnakeBody>();
 
     private float timer = Constants.MOVE_TIME;
@@ -61,9 +71,11 @@ public class GameScreen extends ScreenAdapter {
     private Apple appleObject;
     private Snake snake;
     private GoldCoin goldCoin;
-    private SaveScreen saveScreen;
+
+    //For storing high score
     public Preferences highScore = Gdx.app.getPreferences("HighScore");
 
+    //Game states
     private enum STATE {
         PLAYING,
         GAME_OVER
@@ -71,6 +83,7 @@ public class GameScreen extends ScreenAdapter {
 
     private STATE state = STATE.PLAYING;
 
+    //Inner class for snake's body parts
     private class SnakeBody {
         private float x, y;
         private Texture texture;
@@ -90,6 +103,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Initializes all the objects
+     * **/
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -102,9 +118,12 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2, 0);
         camera.update();
-        saveScreen = new SaveScreen();
     }
 
+    /**
+     * Checks which direction button was pressed and updates
+     * direction of the snake accordingly
+     * **/
     private void queryInput() {
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
@@ -117,6 +136,9 @@ public class GameScreen extends ScreenAdapter {
         if (downPressed) updateDirection(Constants.DOWN);
     }
 
+    /**
+     * Moves snake according to the direction
+     * **/
     private void moveSnake() {
         snakeXBeforeUpdate = snake.position.x;
         snakeYBeforeUpdate = snake.position.y;
@@ -140,11 +162,25 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Updates snake's direction if a new direction is not
+     * the opposite of current direction
+     * <p>
+     *     @param newDirection new selected direction by player.
+     *     @param oppDirection opposite direction of current direction
+     * </p>
+     * **/
     private void updateIfNotOppositeDirection(int newDirection, int oppDirection) {
         if (snakeDirection != oppDirection || bodyParts.size == 0)
             snakeDirection = newDirection;
     }
 
+    /**
+     * Updates snake's direction to new direction if they are not equal
+     * <p>
+     *     @param newDirection new direction selected by player
+     * </p>
+     * **/
     private void updateDirection(int newDirection) {
         if (!directionSet && snakeDirection != newDirection) {
             directionSet = true;
@@ -169,6 +205,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Updates position of snake's body parts
+     * **/
     private void updateSnakeBodyPosition() {
         if (bodyParts.size > 0) {
             SnakeBody part = bodyParts.removeIndex(0);
@@ -177,14 +216,33 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Sets the value of timer to given value
+     * <p>
+     *     @param x new value set to timer
+     * </p>
+     * **/
     public void setTimer(float x) {
         timer = x;
     }
 
+    /**
+     * Sets temporary value
+     * <p>
+     *     @param x value set to temporary value
+     * </p>
+     * **/
     public void setTemp(float x) {
         temp = x;
     }
 
+    /**
+     * Updates snake, moves it, checks if it is out of bounds,
+     * updates position of body parts, checks for collisions
+     * with its own body
+     * <p>
+     *     @param delta time since the last update
+     * </p>**/
     private void updateSnake(float delta) {
         timer -= delta;
         if (timer <= 0) {
@@ -197,6 +255,10 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks if snake is out of bounds and brings it on the
+     * screen from the opposite bound
+     * **/
     private void checkForOutOfBounds() {
         if (snake.position.x >= Gdx.graphics.getWidth()) {
             snake.position.x = 0;
@@ -212,6 +274,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks availability of apple and sets its position coordinates
+     * **/
     private void checkAndPlaceApple() {
         if (!appleAvailable) {
             do {
@@ -226,6 +291,10 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks for collisions with apple. If collision detected,
+     * increases score and body length
+     * **/
     private void checkAppleCollision() {
         if (appleAvailable && appleObject.position.x == snake.position.x
                 && appleObject.position.y == snake.position.y) {
@@ -240,6 +309,12 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks the number of apples placed before.
+     * If 5 apples have been placed before,
+     * sets position coordinates for bonus coin
+     * and resets the counter for apples
+     * **/
     private void checkAndPlaceCoin() {
         if (counter == 5) {
             counter = 0;
@@ -254,6 +329,11 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks for collisions with bonus coin.
+     * If collision detected increases score
+     * and body length of snake
+     * **/
     private void checkCoinCollision() {
         if (coinAvailable && goldCoin.position.x == snake.position.x
                 && goldCoin.position.y == snake.position.y) {
@@ -267,6 +347,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Increases score with corresponding value
+     * **/
     private void addToScore() {
         if (collidedWithApple) {
             score += Constants.POINTS_PER_APPLE;
@@ -276,6 +359,9 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Draws score in the top right corner during the game
+     * **/
     private void drawScore() {
         if (state == STATE.PLAYING) {
             String scoreToString = Integer.toString(score);
@@ -285,6 +371,13 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Checks for collisions with body parts.
+     * If collision detected, changes game state
+     * to GAME OVER, assigns player a final score
+     * and if it is a new high score, stores it
+     * in high scores
+     * **/
     private void checkBodyCollision() {
         for (SnakeBody part : bodyParts) {
             if (part.x == snake.position.x && part.y == snake.position.y) {
@@ -305,6 +398,9 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
+    /**
+     * Draws objects on the game screen
+     * **/
     private void draw() {
         batch.begin();
         batch.draw(snake.getTexture(), snake.position.x, snake.position.y);
@@ -331,6 +427,9 @@ public class GameScreen extends ScreenAdapter {
             doRestart();
     }
 
+    /**
+     * Resets everything and takes player to main menu
+     * **/
     private void doRestart() {
         state = STATE.PLAYING;
         bodyParts.clear();
@@ -356,7 +455,6 @@ public class GameScreen extends ScreenAdapter {
                 checkCoinCollision();
                 checkAndPlaceCoin();
                 checkAndPlaceApple();
-
             }
             break;
             case GAME_OVER: {
