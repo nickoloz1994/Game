@@ -4,17 +4,18 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import gamescreen.GameScreen;
 import menuscreen.MenuScreen;
-import menuscreen.SaveScreen;
 import utils.Constants;
 
 /**
@@ -30,7 +31,6 @@ public class LevelScreen implements Screen {
     private TextButton levelFive;
     private TextButton backButton;
     private Table table;
-    private GameScreen screen = new GameScreen();
 
     public LevelScreen(){
         create();
@@ -47,47 +47,57 @@ public class LevelScreen implements Screen {
         backButton = new TextButton("BACK", skin);
         table = new Table();
 
-        levelOne.addListener(new ClickListener(){
+        levelOne.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+            public void changed(ChangeEvent event, Actor actor) {
+                GameScreen screen = new GameScreen();
                 screen.setTemp(Constants.MOVE_TIME);
+                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                Gdx.input.setInputProcessor(null);
             }
         });
 
         levelTwo.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 2);
                 screen.setTemp(Constants.MOVE_TIME / 2);
+                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                Gdx.input.setInputProcessor(null);
             }
         });
 
         levelThree.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 4);
                 screen.setTemp(Constants.MOVE_TIME / 4);
+                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                Gdx.input.setInputProcessor(null);
             }
         });
 
         levelFour.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 8);
                 screen.setTemp(Constants.MOVE_TIME / 8);
+                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                Gdx.input.setInputProcessor(null);
             }
         });
 
         levelFive.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 16);
                 screen.setTemp(Constants.MOVE_TIME / 16);
+                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                Gdx.input.setInputProcessor(null);
             }
         });
 
@@ -117,9 +127,9 @@ public class LevelScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    public GameScreen getScreen(){
+    /*public GameScreen getScreen(){
         return screen;
-    }
+    }*/
     @Override
     public void show() {
 
