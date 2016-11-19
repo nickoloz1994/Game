@@ -24,7 +24,7 @@ public class HighScore implements Screen {
     private TextField firstPlayer;
     private TextButton backButton;
     private Table table;
-    private GameScreen gameScreen;
+    //private GameScreen gameScreen;
 
     /**
      * Constructor for creating high score menu
@@ -42,7 +42,7 @@ public class HighScore implements Screen {
         firstPlayer = new TextField("", skin);
         backButton = new TextButton("BACK", skin);
         table = new Table(skin);
-        gameScreen = new GameScreen();
+        //gameScreen = new GameScreen();
 
         backButton.addListener(new ClickListener(){
             @Override
@@ -51,13 +51,13 @@ public class HighScore implements Screen {
             }
         });
         
-        firstPlayer.setText(gameScreen.highScore.getString("UserName") + " " +
-                gameScreen.highScore.getString("HighScore"));
+        firstPlayer.setText(GameScreen.highScore.getString("UserName") + " " +
+                GameScreen.highScore.getString("HighScore"));
         table.setWidth(stage.getWidth());
         table.align(Align.center|Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
         table.padTop(Gdx.graphics.getHeight() * 0.33f);
-        table.add(firstPlayer).width(300).height(60).padBottom(30);
+        table.add(firstPlayer).width(200).height(60).padBottom(30);
         table.row();
         table.add(backButton);
         stage.addActor(table);

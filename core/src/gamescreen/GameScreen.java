@@ -73,7 +73,7 @@ public class GameScreen extends ScreenAdapter {
     private GoldCoin goldCoin;
 
     //For storing high score
-    public Preferences highScore = Gdx.app.getPreferences("HighScore");
+    public static Preferences highScore = Gdx.app.getPreferences("HighScore");
 
     //Game states
     private enum STATE {
@@ -274,10 +274,36 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void checkAndPlaceApple(){
+        if (!appleAvailable){
+            boolean overlap = false;
+            float xCoordinate = MathUtils.random(Gdx.graphics.getWidth()
+                    / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+            float yCoordinate = MathUtils.random(Gdx.graphics.getHeight()
+                    / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+
+            for (int i = 0; i < bodyParts.size; i++){
+                float snakeX = bodyParts.get(i).x;
+                float snakeY = bodyParts.get(i).y;
+
+                if (xCoordinate == snakeX && yCoordinate == snakeY){
+                    overlap = true;
+                    break;
+                }
+            }
+            if (!overlap){
+                appleObject.position.x = xCoordinate;
+                appleObject.position.y = yCoordinate;
+                appleAvailable = true;
+                counter++;
+            }
+        }
+    }
+
     /**
      * Checks availability of apple and sets its position coordinates
      * **/
-    private void checkAndPlaceApple() {
+    /*private void checkAndPlaceApple() {
         if (!appleAvailable) {
             do {
                 appleObject.position.x = MathUtils.random(Gdx.graphics.getWidth()
@@ -289,7 +315,9 @@ public class GameScreen extends ScreenAdapter {
             } while (appleObject.position.x == snake.position.x
                     && appleObject.position.y == snake.position.y);
         }
-    }
+    }*/
+
+
 
     /**
      * Checks for collisions with apple. If collision detected,
@@ -318,15 +346,29 @@ public class GameScreen extends ScreenAdapter {
     private void checkAndPlaceCoin() {
         if (counter == 5) {
             counter = 0;
-            do {
-                goldCoin.position.x = MathUtils.random(Gdx.graphics.getWidth()
-                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
-                goldCoin.position.y = MathUtils.random(Gdx.graphics.getHeight()
-                        / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+            boolean overlap = false;
+            float xCoordinate = MathUtils.random(Gdx.graphics.getWidth()
+                    / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+            float yCoordinate = MathUtils.random(Gdx.graphics.getHeight()
+                    / Constants.SNAKE_MOVEMENT - 1) * Constants.SNAKE_MOVEMENT;
+
+            for (int i = 0; i < bodyParts.size; i++){
+                float snakeX = bodyParts.get(i).x;
+                float snakeY = bodyParts.get(i).y;
+
+                if ((xCoordinate == snakeX && yCoordinate == snakeY) ||
+                        (xCoordinate == appleObject.position.x && yCoordinate == appleObject.position.y)){
+                    overlap = true;
+                    break;
+                }
+            }
+            if (!overlap){
+                goldCoin.position.x = xCoordinate;
+                goldCoin.position.y = yCoordinate;
                 coinAvailable = true;
-            } while (goldCoin.position.x == snake.position.x
-                    && goldCoin.position.y == snake.position.y);
+            }
         }
+
     }
 
     /**

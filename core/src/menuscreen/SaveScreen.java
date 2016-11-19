@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import gamescreen.GameScreen;
 
 /**
@@ -21,7 +23,8 @@ public class SaveScreen implements Screen{
     private TextButton saveButton;
     private TextField userName;
     private TextButton backButton;
-    private GameScreen gameScreen;
+    private Table table;
+    //private GameScreen gameScreen;
 
     /**
      * Constructor for creating save screen
@@ -38,7 +41,8 @@ public class SaveScreen implements Screen{
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         saveButton = new TextButton("SAVE", skin);
         userName = new TextField("",skin);
-        gameScreen = new GameScreen();
+        //gameScreen = new GameScreen();
+        table = new Table(skin);
 
         backButton = new TextButton("MAIN", skin);
         backButton.setSize(100,50);
@@ -50,26 +54,25 @@ public class SaveScreen implements Screen{
             }
         });
 
-        userName.setSize(250,100);
-        userName.setPosition(Gdx.graphics.getWidth()/2 - userName.getWidth()/2,
-                Gdx.graphics.getHeight()/2 + userName.getHeight()/4);
-
-        saveButton.setSize(250,100);
-        saveButton.setPosition(Gdx.graphics.getWidth()/2 - saveButton.getWidth()/2,
-                Gdx.graphics.getHeight()/2 - saveButton.getHeight());
-
         saveButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
-                gameScreen.highScore.putString("UserName", userName.getText());
-                gameScreen.highScore.flush();
+                GameScreen.highScore.putString("UserName", userName.getText());
+                GameScreen.highScore.flush();
             }
         });
 
-        stage.addActor(userName);
-        stage.addActor(saveButton);
-        stage.addActor(backButton);
+        table.setWidth(stage.getWidth());
+        table.align(Align.center|Align.top);
+        table.setPosition(0, Gdx.graphics.getHeight());
+        table.padTop(Gdx.graphics.getHeight() * 0.33f);
+        table.add(userName).width(200).height(60).padBottom(30);
+        table.row();
+        table.add(saveButton).padBottom(30);
+        table.row();
+        table.add(backButton);
+        stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);
     }
