@@ -75,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
     private GoldCoin goldCoin;
 
     //For storing high score
-    public static Preferences highScore;
+    public static Preferences highScore = Gdx.app.getPreferences("HighScore");;
 
     //Game states
     private enum STATE {
@@ -120,7 +120,6 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2, 0);
         camera.update();
-        highScore = Gdx.app.getPreferences("HighScore");
     }
 
     /**

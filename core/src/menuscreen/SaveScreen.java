@@ -18,7 +18,7 @@ import gamescreen.GameScreen;
  * This class creates a screen for saving high score
  */
 public class SaveScreen implements Screen{
-    private static final String TAG = Gdx.class.getName();
+    private static final String TAG = SaveScreen.class.getName();
     private Stage stage;
     private Skin skin;
     private TextButton saveButton;

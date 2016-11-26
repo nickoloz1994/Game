@@ -18,7 +18,7 @@ import levelscreen.LevelScreen;
  * This class creates GUI for main menu
  */
 public class MenuScreen implements Screen {
-    private static final String TAG = Gdx.class.getName();
+    private static final String TAG = MenuScreen.class.getName();
     private Stage stage;
     private Skin skin;
     private Table table;

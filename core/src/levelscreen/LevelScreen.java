@@ -22,7 +22,7 @@ import utils.Constants;
  * The class is used for creating menu screen for levels
  */
 public class LevelScreen implements Screen {
-    private static final String TAG = Gdx.class.getName();
+    private static final String TAG = LevelScreen.class.getName();
     private Stage stage;
     private Skin skin;
     private TextButton levelOne;
