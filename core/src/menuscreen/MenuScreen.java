@@ -18,6 +18,7 @@ import levelscreen.LevelScreen;
  * This class creates GUI for main menu
  */
 public class MenuScreen implements Screen {
+    private static final String TAG = Gdx.class.getName();
     private Stage stage;
     private Skin skin;
     private Table table;
@@ -48,6 +49,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new LevelScreen());
+                Gdx.app.log(TAG, "New Game button clicked");
             }
         });
 
@@ -55,6 +57,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new HighScore());
+                Gdx.app.log(TAG, "High Scores button clicked");
             }
         });
 
@@ -62,6 +65,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
+                Gdx.app.log(TAG, "Exit button clicked");
             }
         });
 

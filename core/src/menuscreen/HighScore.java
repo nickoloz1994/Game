@@ -19,6 +19,7 @@ import gamescreen.GameScreen;
  * This class creates menu screen for high score
  */
 public class HighScore implements Screen {
+    private static final String TAG = Gdx.class.getName();
     private Skin skin;
     private Stage stage;
     private TextField firstPlayer;
@@ -46,6 +47,7 @@ public class HighScore implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+                Gdx.app.log(TAG, "Back button pressed");
             }
         });
         

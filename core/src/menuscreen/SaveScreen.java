@@ -18,11 +18,12 @@ import gamescreen.GameScreen;
  * This class creates a screen for saving high score
  */
 public class SaveScreen implements Screen{
+    private static final String TAG = Gdx.class.getName();
     private Stage stage;
     private Skin skin;
     private TextButton saveButton;
     private TextField userName;
-    private TextButton backButton;
+    private TextButton mainButton;
     private Table table;
 
     /**
@@ -42,13 +43,14 @@ public class SaveScreen implements Screen{
         userName = new TextField("",skin);
         table = new Table(skin);
 
-        backButton = new TextButton("MAIN", skin);
-        backButton.setSize(100,50);
-        backButton.setPosition(0, Gdx.graphics.getHeight() - backButton.getHeight());
-        backButton.addListener(new ClickListener(){
+        mainButton = new TextButton("MAIN", skin);
+        mainButton.setSize(100,50);
+        mainButton.setPosition(0, Gdx.graphics.getHeight() - mainButton.getHeight());
+        mainButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+                Gdx.app.log(TAG, "Main Menu button pressed");
             }
         });
 
@@ -56,6 +58,7 @@ public class SaveScreen implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+                Gdx.app.log(TAG, "New entry saved");
                 GameScreen.highScore.putString("UserName", userName.getText());
                 GameScreen.highScore.flush();
             }
@@ -69,7 +72,7 @@ public class SaveScreen implements Screen{
         table.row();
         table.add(saveButton).padBottom(30);
         table.row();
-        table.add(backButton);
+        table.add(mainButton);
         stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);

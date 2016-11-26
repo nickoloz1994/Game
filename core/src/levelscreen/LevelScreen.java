@@ -22,6 +22,7 @@ import utils.Constants;
  * The class is used for creating menu screen for levels
  */
 public class LevelScreen implements Screen {
+    private static final String TAG = Gdx.class.getName();
     private Stage stage;
     private Skin skin;
     private TextButton levelOne;
@@ -47,12 +48,13 @@ public class LevelScreen implements Screen {
         backButton = new TextButton("BACK", skin);
         table = new Table();
 
-        levelOne.addListener(new ChangeListener() {
+        levelOne.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Level 1 chosen");
                 GameScreen screen = new GameScreen();
                 screen.setTemp(Constants.MOVE_TIME);
-                ((Game)Gdx.app.getApplicationListener()).setScreen(screen);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(screen);
                 Gdx.input.setInputProcessor(null);
             }
         });
@@ -60,6 +62,7 @@ public class LevelScreen implements Screen {
         levelTwo.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Level 2 chosen");
                 GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 2);
                 screen.setTemp(Constants.MOVE_TIME / 2);
@@ -71,6 +74,7 @@ public class LevelScreen implements Screen {
         levelThree.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Level 3 chosen");
                 GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 4);
                 screen.setTemp(Constants.MOVE_TIME / 4);
@@ -82,6 +86,7 @@ public class LevelScreen implements Screen {
         levelFour.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Level 4 chosen");
                 GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 8);
                 screen.setTemp(Constants.MOVE_TIME / 8);
@@ -93,6 +98,7 @@ public class LevelScreen implements Screen {
         levelFive.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Level 5 chosen");
                 GameScreen screen = new GameScreen();
                 screen.setTimer(Constants.MOVE_TIME / 16);
                 screen.setTemp(Constants.MOVE_TIME / 16);
@@ -104,6 +110,7 @@ public class LevelScreen implements Screen {
         backButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log(TAG, "Back button clicked");
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
             }
         });
