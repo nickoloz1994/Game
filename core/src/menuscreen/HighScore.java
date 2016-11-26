@@ -24,7 +24,6 @@ public class HighScore implements Screen {
     private TextField firstPlayer;
     private TextButton backButton;
     private Table table;
-    //private GameScreen gameScreen;
 
     /**
      * Constructor for creating high score menu
@@ -42,7 +41,6 @@ public class HighScore implements Screen {
         firstPlayer = new TextField("", skin);
         backButton = new TextButton("BACK", skin);
         table = new Table(skin);
-        //gameScreen = new GameScreen();
 
         backButton.addListener(new ClickListener(){
             @Override

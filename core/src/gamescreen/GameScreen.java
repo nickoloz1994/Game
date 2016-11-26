@@ -29,6 +29,8 @@ import utils.Constants;
  */
 public class GameScreen extends ScreenAdapter {
 
+    private static final String TAG = GameScreen.class.getName();
+
     //For drawing objects on the screen
     private SpriteBatch batch;
 
@@ -73,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
     private GoldCoin goldCoin;
 
     //For storing high score
-    public static Preferences highScore = Gdx.app.getPreferences("HighScore");
+    public static Preferences highScore;
 
     //Game states
     private enum STATE {
@@ -118,6 +120,7 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Constants.WORLD_WIDTH / 2, Constants.WORLD_HEIGHT / 2, 0);
         camera.update();
+        highScore = Gdx.app.getPreferences("HighScore");
     }
 
     /**
@@ -139,7 +142,7 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Moves snake according to the direction
      **/
-    private void moveSnake() {
+    public void moveSnake() {
         snakeXBeforeUpdate = snake.position.x;
         snakeYBeforeUpdate = snake.position.y;
         switch (snakeDirection) {
@@ -172,8 +175,10 @@ public class GameScreen extends ScreenAdapter {
      *                     </p>
      **/
     private void updateIfNotOppositeDirection(int newDirection, int oppDirection) {
-        if (snakeDirection != oppDirection || bodyParts.size == 0)
+        if (snakeDirection != oppDirection || bodyParts.size == 0) {
             snakeDirection = newDirection;
+            Gdx.app.log(TAG, "Snake direction updated");
+        }
     }
 
     /**
@@ -268,15 +273,19 @@ public class GameScreen extends ScreenAdapter {
     private void checkForOutOfBounds() {
         if (snake.position.x >= Gdx.graphics.getWidth()) {
             snake.position.x = 0;
+            Gdx.app.log(TAG, "Snake comes out from left edge");
         }
         if (snake.position.x < 0) {
             snake.position.x = Gdx.graphics.getWidth() - Constants.SNAKE_MOVEMENT;
+            Gdx.app.log(TAG, "Snake comes out from right edge");
         }
         if (snake.position.y >= Gdx.graphics.getHeight()) {
             snake.position.y = 0;
+            Gdx.app.log(TAG, "Snake comes out from bottom edge");
         }
         if (snake.position.y < 0) {
             snake.position.y = Gdx.graphics.getHeight() - Constants.SNAKE_MOVEMENT;
+            Gdx.app.log(TAG, "Snake comes out from top edge");
         }
     }
 
@@ -304,6 +313,7 @@ public class GameScreen extends ScreenAdapter {
                 appleObject.position.x = xCoordinate;
                 appleObject.position.y = yCoordinate;
                 appleAvailable = true;
+                Gdx.app.log(TAG, "Apple is placed");
                 counter++;
             }
         }
@@ -319,11 +329,11 @@ public class GameScreen extends ScreenAdapter {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
+            Gdx.app.log(TAG, "Apple collected");
             collidedWithApple = true;
             collidedWithCoin = false;
             addToScore();
             appleAvailable = false;
-
         }
     }
 
@@ -357,6 +367,7 @@ public class GameScreen extends ScreenAdapter {
                 goldCoin.position.x = xCoordinate;
                 goldCoin.position.y = yCoordinate;
                 coinAvailable = true;
+                Gdx.app.log(TAG, "Gold coin is placed");
             }
         }
 
@@ -373,6 +384,7 @@ public class GameScreen extends ScreenAdapter {
             SnakeBody part = new SnakeBody(snakeBody);
             part.updateBodyPosition(snake.position.x, snake.position.y);
             bodyParts.insert(0, part);
+            Gdx.app.log(TAG, "Gold coin collected");
             collidedWithCoin = true;
             collidedWithApple = false;
             addToScore();
@@ -386,9 +398,11 @@ public class GameScreen extends ScreenAdapter {
     private void addToScore() {
         if (collidedWithApple) {
             score += Constants.POINTS_PER_APPLE;
+            Gdx.app.log(TAG, "Score increased by 20");
         }
         if (collidedWithCoin) {
             score += Constants.POINTS_PER_COIN;
+            Gdx.app.log(TAG, "Score increased by 50");
         }
     }
 
@@ -415,6 +429,7 @@ public class GameScreen extends ScreenAdapter {
         for (SnakeBody part : bodyParts) {
             if (part.x == snake.position.x && part.y == snake.position.y) {
                 state = STATE.GAME_OVER;
+                Gdx.app.log(TAG, "Collided with body!!! Game is over!!!");
                 Player player = new Player();
                 player.score = score;
                 if (player.score > highScore.getInteger("HighScore")) {

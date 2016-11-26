@@ -24,7 +24,6 @@ public class SaveScreen implements Screen{
     private TextField userName;
     private TextButton backButton;
     private Table table;
-    //private GameScreen gameScreen;
 
     /**
      * Constructor for creating save screen
@@ -41,7 +40,6 @@ public class SaveScreen implements Screen{
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         saveButton = new TextButton("SAVE", skin);
         userName = new TextField("",skin);
-        //gameScreen = new GameScreen();
         table = new Table(skin);
 
         backButton = new TextButton("MAIN", skin);
