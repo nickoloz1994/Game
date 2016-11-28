@@ -25,6 +25,7 @@ public class MenuScreen implements Screen {
     private TextButton newGameButton;
     private TextButton highScoresButton;
     private TextButton exitButton;
+    private TextButton aboutButton;
 
     /**
      * Constructor for creating main menu
@@ -44,6 +45,8 @@ public class MenuScreen implements Screen {
         newGameButton = new TextButton("NEW GAME",skin);
         highScoresButton = new TextButton("HIGH SCORE", skin);
         exitButton = new TextButton("EXIT", skin);
+        aboutButton = new TextButton("ABOUT", skin);
+
 
         newGameButton.addListener(new ClickListener(){
             @Override
@@ -58,6 +61,13 @@ public class MenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new HighScore());
                 Gdx.app.log(TAG, "High Scores button clicked");
+            }
+        });
+
+        aboutButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new AboutScreen());
             }
         });
 
@@ -76,6 +86,8 @@ public class MenuScreen implements Screen {
         table.add(newGameButton).padBottom(30);
         table.row();
         table.add(highScoresButton).padBottom(30);
+        table.row();
+        table.add(aboutButton).padBottom(30);
         table.row();
         table.add(exitButton);
         stage.addActor(table);
